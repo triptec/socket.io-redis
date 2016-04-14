@@ -28,30 +28,15 @@ module.exports = adapter;
 function adapter(uri, opts){
   opts = opts || {};
 
-  // handle options only
-  if ('object' == typeof uri) {
-    opts = uri;
-    uri = null;
-  }
-
-  // handle uri string
-  if (uri) {
-    uri = uri.split(':');
-    opts.host = uri[0];
-    opts.port = uri[1];
-  }
-
   // opts
-  var host = opts.host || '127.0.0.1';
-  var port = Number(opts.port || 6379);
   var pub = opts.pubClient;
   var sub = opts.subClient;
   var prefix = opts.key || 'socket.io';
   var subEvent = opts.subEvent || 'message';
 
   // init clients if needed
-  if (!pub) pub = redis(port, host);
-  if (!sub) sub = redis(port, host, { return_buffers: true });
+  if (!pub) pub = redis(uri);
+  if (!sub) sub = redis(uri, { return_buffers: true });
 
   // this server's key
   var uid = uid2(6);
